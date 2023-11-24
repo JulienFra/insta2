@@ -7,6 +7,8 @@ use App\Models\Post;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Requests\PostCreateRequest;
+use App\Models\User;
+use Carbon\Carbon;
 
 class PostController extends Controller
 {
@@ -15,7 +17,8 @@ class PostController extends Controller
      */
     public function index()
 {
-    $posts = Auth::user()->posts()
+    $user = User::find(Auth::id());
+    $posts = $user->posts()
         ->orderByDesc('updated_at')
         ->get();
 
@@ -52,7 +55,7 @@ class PostController extends Controller
 
         // Accédez aux autres champs directement à partir de la demande
         $post->body = $request->input('body');
-        $post->published_at = $request->input('published_at');
+        $post->published_at = Carbon::now();
         $post->user_id = Auth::id();
         $post->save();
 
@@ -72,23 +75,38 @@ class PostController extends Controller
      * Show the form for editing the specified resource.
      */
     public function edit(Post $post)
-    {
-        //
-    }
+{
+    return view('admin.posts.edit', compact('post'));
+}
 
     /**
      * Update the specified resource in storage.
      */
     public function update(Request $request, Post $post)
     {
-        //
+        // Ajoutez ici la logique de validation et de mise à jour du post
+        $post->update([
+            'body' => $request->input('body'),
+            // Ajoutez d'autres champs si nécessaire
+        ]);
+
+        return redirect()->route('admin')->with('success', 'Le post a été mis à jour avec succès.');
     }
 
     /**
      * Remove the specified resource from storage.
      */
     public function destroy(Post $post)
+{
+    $post->delete();
+
+    // Redirige vers la liste des posts ou une autre page après la suppression
+    return redirect()->route('admin');
+}
+    public function destroyConfirmation(Post $post)
     {
-        //
+        return view('admin.posts.confirm-destroy', compact('post'));
     }
 }
+
+

@@ -12,4 +12,7 @@ class Post extends Model
         return $this->belongsTo(User::class);
     }
     use HasFactory;
+    protected $fillable = [
+        'body', // Ajoutez d'autres champs si nécessaire
+    ];
 }

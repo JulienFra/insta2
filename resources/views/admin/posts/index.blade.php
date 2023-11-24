@@ -1,4 +1,4 @@
-<x-app-layout>
+<x-guest-layout>
 
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 leading-tight">
@@ -46,13 +46,10 @@
                                             {{ $post->updated_at }}
                                         </td>
                                         <td class="border px-4 py-2 space-x-4">
-                                            {{-- <a href="{{ route('posts.edit', $post->id) }}" class="text-blue-400">Edit</a> --}}
-                                            {{-- <form action="{{ route('posts.destroy', $post->id) }}" method="POST"
-                                                class="inline">
-                                                @csrf
-                                                @method('DELETE')
-                                                <button type="submit" class="text-red-400">Delete</button>
-                                            </form> --}}
+                                            <a href="{{ route('admin.posts.edit', $post->id) }}" class="text-blue-400">Edit</a>
+                                            <form action="{{ route('admin.posts.confirm-destroy', $post->id) }}">
+                                                <button type="submit" class="text-red-400">Supprimer</button>
+                                            </form>
                                         </td>
                                     </tr>
                                 @empty
@@ -69,4 +66,4 @@
         </div>
     </div>
 
-</x-app-layout>
+</x-guest-layout>

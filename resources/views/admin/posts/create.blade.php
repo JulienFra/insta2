@@ -1,4 +1,4 @@
-<x-app-layout>
+<x-guest-layout>
 
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 leading-tight">
@@ -27,12 +27,6 @@
                     @enderror
                 </div>
 
-                <div>
-                    <x-input-label for="published_at" :value="__('Date de publication')" />
-                    <x-text-input id="published_at" class="block mt-1 w-full" type="date" name="published_at"
-                        :value="old('published_at')" />
-                    <x-input-error :messages="$errors->get('published_at')" class="mt-2" />
-                </div>
 
                 <div>
                     <x-input-label for="body" :value="__('Texte de l\'article')" />
@@ -50,4 +44,4 @@
             </form>
         </div>
     </div>
-</x-app-layout>
+</x-guest-layout>
