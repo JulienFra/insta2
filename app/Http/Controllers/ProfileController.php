@@ -57,4 +57,38 @@ class ProfileController extends Controller
 
         return Redirect::to('/');
     }
+
+    public function showAvatarForm(Request $request): View
+    {
+        return view('profile.avatar', [
+            'user' => $request->user(),
+        ]);
+    }
+
+    public function updateAvatar(Request $request): RedirectResponse
+    {
+        $request->validate([
+            'avatar' => ['required', 'image', 'max:2048'],
+        ]);
+
+        if ($request->hasFile('avatar')) {
+            $user = $request->user();
+            $path = $request->file('avatar')->store('avatars', 'public');
+            $user->avatar_path = $path;
+            $user->save();
+        }
+
+        return Redirect::route('profile.edit')->with('status', 'avatar-updated');
+    }
+    public function updateBio(ProfileUpdateRequest $request): RedirectResponse
+    {
+        $user = $request->user();
+
+        $user->bio = $request->input('bio');
+        $user->save();
+
+        return Redirect::route('profile.edit')->with('status', 'bio-updated');
+    }
+
+
 }

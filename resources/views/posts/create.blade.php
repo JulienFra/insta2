@@ -1,4 +1,4 @@
-<x-guest-layout>
+<x-app-layout>
 
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 leading-tight">
@@ -14,7 +14,7 @@
                 </div>
             </div>
 
-            <form method="POST" action="{{ route('admin.posts.store') }}" class="flex flex-col space-y-4 text-gray-500" enctype="multipart/form-data">
+            <form method="POST" action="{{ route('posts.store') }}" class="flex flex-col space-y-4 text-gray-500" enctype="multipart/form-data">
 
                 @csrf
 
@@ -44,4 +44,4 @@
             </form>
         </div>
     </div>
-</x-guest-layout>
+</x-app-layout>

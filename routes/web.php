@@ -4,7 +4,7 @@ use App\Http\Controllers\HomepageController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\PostController;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\Admin\PostController as AdminPostController;
+
 
 
 /*
@@ -26,16 +26,20 @@ Route::get('/', [HomepageController::class, 'index'])->name('homepage');
 
 
 Route::middleware(['auth'])->group(function () {
-    Route::get('/posts', [PostController::class, 'index'])->name('posts.index');
-    Route::get('/posts/{id}', [PostController::class, 'show'])->name('posts.show');
+;
 
-    Route::get('/admin', [AdminPostController::class, 'index'])->name('admin');
-    Route::get('/admin/posts/create', [AdminPostController::class, 'create'])->name('admin.posts.create');
-    Route::post('/admin/posts/store', [AdminPostController::class, 'store'])->name('admin.posts.store');
-    Route::delete('/admin/posts/destroy/{post}', [AdminPostController::class, 'destroy'])->name('admin.posts.destroy');
-    Route::get('/admin/posts/confirm-destroy/{post}', [AdminPostController::class, 'destroyConfirmation'])->name('admin.posts.confirm-destroy');
-    Route::get('/admin/posts/{post}/edit', [AdminPostController::class, 'edit'])->name('admin.posts.edit');
-    Route::put('/admin/posts/{post}', [AdminPostController::class, 'update'])->name('admin.posts.update');
+    Route::get('/posts', [PostController::class, 'index'])->name('posts.index');
+    Route::get('/posts/compte', [PostController::class, 'compte'])->name('posts.compte');
+    Route::get('/posts/create', [PostController::class, 'create'])->name('posts.create');
+    Route::post('/posts/store', [PostController::class, 'store'])->name('posts.store');
+    Route::get('/posts/{id}', [PostController::class, 'show'])->name('posts.show');
+    Route::delete('/posts/destroy/{post}', [PostController::class, 'destroy'])->name('posts.destroy');
+    Route::get('/posts/confirm-destroy/{post}', [PostController::class, 'destroyConfirmation'])->name('posts.confirm-destroy');
+    Route::get('/posts/{post}/edit', [PostController::class, 'edit'])->name('posts.edit');
+    Route::put('/posts/{post}', [PostController::class, 'update'])->name('posts.update');
+
+    Route::get('/profile/avatar', [ProfileController::class, 'showAvatarForm'])->name('profile.avatar');
+    Route::patch('/profile/avatar', [ProfileController::class, 'updateAvatar'])->name('profile.avatar.update');
 });
 
 Route::get('/dashboard', function () {
@@ -46,6 +50,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+    Route::patch('/profile/bio', [ProfileController::class, 'updateBio'])->name('profile.update');
 });
 
 

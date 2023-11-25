@@ -1,4 +1,4 @@
-<x-guest-layout>
+<x-app-layout>
 
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 leading-tight">
@@ -18,7 +18,7 @@
                 Êtes-vous sûr de vouloir supprimer ce post ?
             </p>
 
-            <form method="POST" action="{{ route('admin.posts.destroy', $post->id) }}" class="mt-6">
+            <form method="POST" action="{{ route('posts.destroy', $post->id) }}" class="mt-6">
                 @csrf
                 @method('DELETE')
                 <x-primary-button type="submit">
@@ -27,4 +27,4 @@
             </form>
         </div>
     </div>
-</x-guest-layout>
+</x-app-layout>

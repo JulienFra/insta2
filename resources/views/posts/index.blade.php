@@ -1,4 +1,4 @@
-<x-guest-layout>
+<x-app-layout>
 
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 leading-tight">
@@ -16,7 +16,7 @@
                         </div>
 
                         <div class="flex items-center space-x-8">
-                            <a href="{{ route('admin.posts.create') }}"
+                            <a href="{{ route('posts.create') }}"
                                 class="text-gray-500 font-bold py-2 px-4 rounded hover:bg-gray-200 transition">Ajouter un
                                 post</a>
                         </div>
@@ -46,8 +46,8 @@
                                             {{ $post->updated_at }}
                                         </td>
                                         <td class="border px-4 py-2 space-x-4">
-                                            <a href="{{ route('admin.posts.edit', $post->id) }}" class="text-blue-400">Edit</a>
-                                            <form action="{{ route('admin.posts.confirm-destroy', $post->id) }}">
+                                            <a href="{{ route('posts.edit', $post->id) }}" class="text-blue-400">Edit</a>
+                                            <form action="{{ route('posts.confirm-destroy', $post->id) }}">
                                                 <button type="submit" class="text-red-400">Supprimer</button>
                                             </form>
                                         </td>
@@ -66,4 +66,4 @@
         </div>
     </div>
 
-</x-guest-layout>
+</x-app-layout>

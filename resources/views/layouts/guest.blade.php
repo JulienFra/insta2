@@ -31,7 +31,7 @@
                 <div class="flex items-center space-x-4">
                     <!-- Lien vers le profil -->
                     <a href="/profile" class="text-gray-500 hover:text-emerald-600 transition">Profile</a>
-                    <a href="/admin" class="text-gray-500 hover:text-emerald-600 transition">Compte</a>
+                    <a href="/posts/compte" class="text-gray-500 hover:text-emerald-600 transition">Compte</a>
 
                     <!-- Vous pouvez ajouter d'autres liens ici si nécessaire -->
                 </div>

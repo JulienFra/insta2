@@ -4,18 +4,27 @@
         <div class="flex justify-between h-16">
             <div class="flex">
                 <!-- Logo -->
-                <div class="shrink-0 flex items-center">
-                    <a href="{{ route('dashboard') }}">
-                        <x-application-logo class="block h-9 w-auto fill-current text-gray-800 dark:text-gray-200" />
+                @if(!request()->is('/'))
+            <nav class="flex justify-between items-center py-2">
+                <div>
+                    <a href="/posts"
+                        class="group font-bold text-3xl flex items-center space-x-4 hover:text-emerald-600 transition ">
+                        <x-application-logo
+                            class="w-10 h-10 fill-current text-gray-500 group-hover:text-emerald-500 transition" />
+
                     </a>
                 </div>
+                <div class="flex items-center space-x-4 ml-4">
+                    <!-- Lien vers le profil -->
+                    <a href="/posts/compte" class="text-gray-500 hover:text-emerald-600 transition">Compte</a>
 
-                <!-- Navigation Links -->
-                <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
-                    <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
-                        {{ __('Dashboard') }}
-                    </x-nav-link>
+                    <!-- Vous pouvez ajouter d'autres liens ici si nécessaire -->
                 </div>
+
+            </nav>
+            @endif
+
+
             </div>
 
             <!-- Settings Dropdown -->
