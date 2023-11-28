@@ -4,6 +4,8 @@ use App\Http\Controllers\HomepageController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\PostController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\LikeController;
+
 
 
 
@@ -40,6 +42,7 @@ Route::middleware(['auth'])->group(function () {
 
     Route::get('/profile/avatar', [ProfileController::class, 'showAvatarForm'])->name('profile.avatar');
     Route::patch('/profile/avatar', [ProfileController::class, 'updateAvatar'])->name('profile.avatar.update');
+    Route::get('/post/search', [PostController::class, 'search'])->name('post.search');
 });
 
 Route::get('/dashboard', function () {
@@ -47,10 +50,17 @@ Route::get('/dashboard', function () {
 })->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::middleware('auth')->group(function () {
+    Route::post('/posts/{post}/like', [LikeController::class, 'like'])->name('posts.like');
+    Route::delete('/posts/{post}/unlike', [LikeController::class, 'unlike'])->name('posts.unlike');
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
-    Route::patch('/profile/bio', [ProfileController::class, 'updateBio'])->name('profile.update');
+
+    Route::get('/profile/{user}', [ProfileController::class, 'showProfile'])->name('profile.show');
+    Route::post('/follow/{user}', [ProfileController::class, 'follow'])->name('follow');
+    Route::delete('/unfollow/{user}', [ProfileController::class, 'unfollow'])->name('unfollow');
+
+
 });
 
 

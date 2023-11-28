@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Auth;
 use App\Http\Requests\PostCreateRequest;
 use App\Models\User;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\DB;
 
 class PostController extends Controller
 {
@@ -17,16 +18,29 @@ class PostController extends Controller
      */
     public function index()
 {
-        $posts = Post::query()
-        ->orderByDesc('updated_at')
-        ->paginate(12);
+    $query = request('query');
 
-    return view(
-        'post.index',
-        [
-            'posts' => $posts,
-        ]
-    );
+    // Récupérer les utilisateurs suivis
+    $followingIds = Auth::user()->following->pluck('id');
+
+    // Récupérer les posts des utilisateurs suivis avec le nombre de likes pour chaque post
+    $followedPosts = Post::whereIn('user_id', $followingIds)
+        ->select('*', DB::raw('(SELECT COUNT(*) FROM likes WHERE post_id = posts.id) AS likes_count'))
+        ->orderByDesc('updated_at');
+
+    // Rechercher des posts s'il y a une requête de recherche
+    if ($query) {
+        $followedPosts->where('title', 'like', '%' . $query . '%');
+    }
+
+    // Récupérer les posts avec le plus de likes (ordonnés par le nombre de likes décroissants)
+    $popularPosts = Post::select('*', DB::raw('(SELECT COUNT(*) FROM likes WHERE post_id = posts.id) AS likes_count'))
+        ->orderByDesc('likes_count');
+
+    // Fusionner les deux collections de posts et trier par date de mise à jour décroissante
+    $posts = $followedPosts->union($popularPosts)->orderByDesc('updated_at')->paginate(12);
+
+    return view('post.index', compact('posts'));
 }
 public function compte()
 {
@@ -111,6 +125,7 @@ public function show($id)
      */
     public function destroy(Post $post)
 {
+    $post->likes()->delete();
     $post->delete();
 
     // Redirige vers la liste des posts ou une autre page après la suppression
@@ -120,6 +135,19 @@ public function show($id)
     {
         return view('posts.confirm-destroy', compact('post'));
     }
+    public function search(Request $request)
+        {
+            $query = $request->input('query');
+
+            $posts = Post::where('body', 'like', "%$query%")
+                    ->orWhereHas('user', function ($userQuery) use ($query) {
+                        $userQuery->where('username', 'like', "%$query%");
+                    })
+                    ->paginate(10);
+
+            return view('post.index', compact('posts'));
+        }
+
 }
 
 

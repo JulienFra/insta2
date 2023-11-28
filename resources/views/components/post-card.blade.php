@@ -10,7 +10,9 @@
     <div class="flex-grow text-gray-700 text-sm text-justify">
         {{ Str::limit($post->body, 120) }}
     </div>
-
+    <div>
+    <p>{{ $post->likes_count }} likes</p>
+    </div>
     <div class="text-xs text-gray-500">
         {{ $post->published_at }}
     </div>
