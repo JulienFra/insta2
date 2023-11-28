@@ -19,7 +19,7 @@
 
     <div class="mt-4">
         <div class="flex items-center mb-2">
-            <span class="text-sm font-semibold mr-2">{{ $post->likes()->count() }} likes</span>
+            <span class="text-sm font-semibold mr-2">{{ $post->likeCount() }} likes</span>
             @if(auth()->check() && auth()->user()->id !== $post->user->id)
                 @if(auth()->user()->hasLiked($post))
                     <form action="{{ route('posts.unlike', $post) }}" method="POST">

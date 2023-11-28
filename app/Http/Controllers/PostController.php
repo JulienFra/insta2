@@ -10,38 +10,64 @@ use App\Http\Requests\PostCreateRequest;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Pagination\LengthAwarePaginator;
 
 class PostController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
+
+
+
+
+
     public function index()
-{
-    $query = request('query');
+    {
+        $user = Auth::user();
 
-    // Récupérer les utilisateurs suivis
-    $followingIds = Auth::user()->following->pluck('id');
+        $threeDaysAgo = Carbon::now()->subDays(3);
 
-    // Récupérer les posts des utilisateurs suivis avec le nombre de likes pour chaque post
-    $followedPosts = Post::whereIn('user_id', $followingIds)
-        ->select('*', DB::raw('(SELECT COUNT(*) FROM likes WHERE post_id = posts.id) AS likes_count'))
-        ->orderByDesc('updated_at');
+        // Récupérer les posts des utilisateurs que vous suivez publiés au cours des trois derniers jours
+        $followedPosts = Post::whereHas('user.followers', function ($query) use ($user) {
+                $query->where('follower_id', $user->id);
+            })
+            ->whereDate('published_at', '>=', $threeDaysAgo)
+            ->orderByDesc('published_at')
+            ->get();
 
-    // Rechercher des posts s'il y a une requête de recherche
-    if ($query) {
-        $followedPosts->where('title', 'like', '%' . $query . '%');
+        // Récupérer les autres posts du plus liké au moins liké
+        $remainingPosts = Post::whereNotIn('id', $followedPosts->pluck('id')->toArray())
+            ->withCount('likes')
+            ->orderByDesc('likes_count')
+            ->get();
+
+        // Fusionner les deux collections paginées de posts
+        $mergedPosts = $followedPosts->merge($remainingPosts);
+
+        // Paginer la collection fusionnée
+
+
+        $currentPage = LengthAwarePaginator::resolveCurrentPage();
+        $perPage = 10; // Définissez le nombre d'éléments par page selon vos besoins
+
+        $currentPageItems = $mergedPosts->slice(($currentPage - 1) * $perPage, $perPage)->all();
+
+        $postsPaginated = new LengthAwarePaginator(
+            $currentPageItems,
+            count($mergedPosts),
+            $perPage,
+            $currentPage,
+            ['path' => LengthAwarePaginator::resolveCurrentPath()]
+        );
+
+        return view('post.index', [
+            'posts' => $postsPaginated,
+        ]);
     }
 
-    // Récupérer les posts avec le plus de likes (ordonnés par le nombre de likes décroissants)
-    $popularPosts = Post::select('*', DB::raw('(SELECT COUNT(*) FROM likes WHERE post_id = posts.id) AS likes_count'))
-        ->orderByDesc('likes_count');
 
-    // Fusionner les deux collections de posts et trier par date de mise à jour décroissante
-    $posts = $followedPosts->union($popularPosts)->orderByDesc('updated_at')->paginate(12);
 
-    return view('post.index', compact('posts'));
-}
+
+
+
 public function compte()
 {
     $user = User::find(Auth::id());

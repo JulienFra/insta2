@@ -97,7 +97,9 @@ class ProfileController extends Controller
     {
         $posts = $user->posts()->paginate(10);
 
-        return view('profile.profile_utilisateur', compact('user', 'posts'));
+        $count_follower = $user->followers()->count();
+
+        return view('profile.profile_utilisateur', compact('user', 'posts', 'count_follower'));
     }
 
     public function follow(User $user)
@@ -117,5 +119,7 @@ class ProfileController extends Controller
         auth()->user()->following()->detach($user);
         return back();
     }
+
+
 
 }

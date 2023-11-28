@@ -2,13 +2,11 @@
     <h1 class="font-bold text-xl mb-4">{{ $user->username }}'s Profile</h1>
 
     <div class="flex items-center">
-        <div class="w-20 h-20 overflow-hidden rounded-full">
-            <img src="{{ asset('storage/' . $user->avatar_path) }}" alt="{{ $user->username }}" class="w-full h-full object-cover">
-        </div>
+        <x-avatar class="h-20 w-20" :user="$user" />
     </div>
     <div class="mt-4">
 
-        <p class="text-gray-500">{{ $user->followers()->count() }} followers</p>
+        <p class="text-gray-500">{{ $count_follower }} followers</p>
     </div>
     <div class="mt-4">
         @if(session('error'))

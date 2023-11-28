@@ -11,7 +11,7 @@
         {{ Str::limit($post->body, 120) }}
     </div>
     <div>
-    <p>{{ $post->likes_count }} likes</p>
+        <span class="text-sm font-semibold mr-2">{{ $post->likes()->count() }} likes</span>
     </div>
     <div class="text-xs text-gray-500">
         {{ $post->published_at }}
