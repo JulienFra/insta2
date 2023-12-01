@@ -7,14 +7,19 @@ use Illuminate\Database\Eloquent\Model;
 
 class Post extends Model
 {
+    use HasFactory;
+
+    protected $fillable = [
+        'body', // Ajoutez d'autres champs si nécessaire
+    ];
+
+    protected $casts = ['published_at' => 'datetime'];
+
     public function user()
     {
         return $this->belongsTo(User::class);
     }
-    use HasFactory;
-    protected $fillable = [
-        'body', // Ajoutez d'autres champs si nécessaire
-    ];
+
     public function likes()
     {
         return $this->hasMany(Like::class);
@@ -23,5 +28,10 @@ class Post extends Model
     public function likeCount()
     {
         return $this->likes()->count();
+    }
+
+    public function comments()
+    {
+        return $this->hasMany(Comment::class);
     }
 }

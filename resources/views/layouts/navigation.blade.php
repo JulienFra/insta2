@@ -15,11 +15,16 @@
                     </a>
                 </div>
                 <div class="flex items-center space-x-4 ml-4">
+                    <a class="text-gray-500 hover:text-emerald-600 transition" href="{{ route('profile.show', ['user' => auth()->user()]) }}" class="hover:text-gray-300 ml-4">Ma page</a>
+                    </div>
+                <div class="flex items-center space-x-4 ml-4">
                     <!-- Lien vers le profil -->
-                    <a href="/posts/compte" class="text-gray-500 hover:text-emerald-600 transition">Compte</a>
+                    <a href="/posts/compte" class="text-gray-500 hover:text-emerald-600 transition">Gérer nos posts</a>
 
                     <!-- Vous pouvez ajouter d'autres liens ici si nécessaire -->
                 </div>
+
+
 
             </nav>
             @endif

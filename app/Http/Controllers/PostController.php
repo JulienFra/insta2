@@ -2,23 +2,16 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Controllers\Controller;
-use App\Models\Post;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 use App\Http\Requests\PostCreateRequest;
+use App\Models\Post;
 use App\Models\User;
 use Carbon\Carbon;
-use Illuminate\Support\Facades\DB;
+use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Support\Facades\Auth;
 
 class PostController extends Controller
 {
-
-
-
-
-
     public function index()
     {
         $user = Auth::user();
@@ -27,8 +20,8 @@ class PostController extends Controller
 
         // Récupérer les posts des utilisateurs que vous suivez publiés au cours des trois derniers jours
         $followedPosts = Post::whereHas('user.followers', function ($query) use ($user) {
-                $query->where('follower_id', $user->id);
-            })
+            $query->where('follower_id', $user->id);
+        })
             ->whereDate('published_at', '>=', $threeDaysAgo)
             ->orderByDesc('published_at')
             ->get();
@@ -43,7 +36,6 @@ class PostController extends Controller
         $mergedPosts = $followedPosts->merge($remainingPosts);
 
         // Paginer la collection fusionnée
-
 
         $currentPage = LengthAwarePaginator::resolveCurrentPage();
         $perPage = 10; // Définissez le nombre d'éléments par page selon vos besoins
@@ -63,26 +55,22 @@ class PostController extends Controller
         ]);
     }
 
+    public function compte()
+    {
+        $user = User::find(Auth::id());
+        $posts = $user->posts()
+            ->orderByDesc('updated_at')
+            ->paginate(12);
 
+        return view(
+            'posts.index',
+            [
+                'posts' => $posts,
+            ]
+        );
+    }
 
-
-
-
-public function compte()
-{
-    $user = User::find(Auth::id());
-    $posts = $user->posts()
-        ->orderByDesc('updated_at')
-        ->paginate(12);
-
-    return view(
-        'posts.index',
-        [
-            'posts' => $posts,
-        ]
-    );
-}
-public function show($id)
+    public function show($id)
     {
         $post = Post::findOrFail($id);
 
@@ -93,9 +81,9 @@ public function show($id)
 
     /**
      * Show the form for creating a new resource.
+     *
      * @return \Illuminate\Http\Response
      */
-
     public function create()
     {
         return view('posts.create');
@@ -103,6 +91,7 @@ public function show($id)
 
     /**
      * Store a newly created resource in storage.
+     *
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
@@ -123,14 +112,13 @@ public function show($id)
         return redirect()->route('posts.index');
     }
 
-
     /**
      * Show the form for editing the specified resource.
      */
     public function edit(Post $post)
-{
-    return view('posts.edit', compact('post'));
-}
+    {
+        return view('posts.edit', compact('post'));
+    }
 
     /**
      * Update the specified resource in storage.
@@ -150,30 +138,30 @@ public function show($id)
      * Remove the specified resource from storage.
      */
     public function destroy(Post $post)
-{
-    $post->likes()->delete();
-    $post->delete();
+    {
+        $post->comments()->delete();
+        $post->likes()->delete();
+        $post->delete();
 
-    // Redirige vers la liste des posts ou une autre page après la suppression
-    return redirect()->route('posts.index');
-}
+        // Redirige vers la liste des posts ou une autre page après la suppression
+        return redirect()->route('posts.index');
+    }
+
     public function destroyConfirmation(Post $post)
     {
         return view('posts.confirm-destroy', compact('post'));
     }
+
     public function search(Request $request)
-        {
-            $query = $request->input('query');
+    {
+        $query = $request->input('query');
 
-            $posts = Post::where('body', 'like', "%$query%")
-                    ->orWhereHas('user', function ($userQuery) use ($query) {
-                        $userQuery->where('username', 'like', "%$query%");
-                    })
-                    ->paginate(10);
+        $posts = Post::where('body', 'like', "%$query%")
+            ->orWhereHas('user', function ($userQuery) use ($query) {
+                $userQuery->where('username', 'like', "%$query%");
+            })
+            ->paginate(10);
 
-            return view('post.index', compact('posts'));
-        }
-
+        return view('post.index', compact('posts'));
+    }
 }
-
-

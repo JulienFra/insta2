@@ -1,4 +1,5 @@
 <?php
+
 namespace Database\Factories;
 
 use App\Models\User;
@@ -23,7 +24,7 @@ class PostFactory extends Factory
 
                 return str_replace(storage_path('app/public/'), '', $absolutePath);
             },
-            'published_at' => fake()->dateTimeBetween('-2 months', '+ 1 month'),
+            'published_at' => fake()->dateTimeBetween('-2 months', '+ 0 month'),
             'user_id' => User::get()->random()->id,
         ];
     }

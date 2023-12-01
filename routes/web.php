@@ -1,13 +1,11 @@
 <?php
 
+use App\Http\Controllers\CommentController;
 use App\Http\Controllers\HomepageController;
-use App\Http\Controllers\ProfileController;
-use App\Http\Controllers\PostController;
-use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\LikeController;
-
-
-
+use App\Http\Controllers\PostController;
+use App\Http\Controllers\ProfileController;
+use Illuminate\Support\Facades\Route;
 
 /*
 |--------------------------------------------------------------------------
@@ -20,20 +18,17 @@ use App\Http\Controllers\LikeController;
 |
 */
 
-
-
-
 Route::get('/', [HomepageController::class, 'index'])->name('homepage');
 
-
-
 Route::middleware(['auth'])->group(function () {
-;
 
+    Route::post('/comments/{post}', [CommentController::class, 'store'])->name('comments.store');
+    Route::delete('/comments/{comment}', [CommentController::class, 'destroy'])->name('comments.destroy');
     Route::get('/posts', [PostController::class, 'index'])->name('posts.index');
     Route::get('/posts/compte', [PostController::class, 'compte'])->name('posts.compte');
     Route::get('/posts/create', [PostController::class, 'create'])->name('posts.create');
     Route::post('/posts/store', [PostController::class, 'store'])->name('posts.store');
+
     Route::get('/posts/{id}', [PostController::class, 'show'])->name('posts.show');
     Route::delete('/posts/destroy/{post}', [PostController::class, 'destroy'])->name('posts.destroy');
     Route::get('/posts/confirm-destroy/{post}', [PostController::class, 'destroyConfirmation'])->name('posts.confirm-destroy');
@@ -60,9 +55,6 @@ Route::middleware('auth')->group(function () {
     Route::post('/follow/{user}', [ProfileController::class, 'follow'])->name('follow');
     Route::delete('/unfollow/{user}', [ProfileController::class, 'unfollow'])->name('unfollow');
 
-
 });
-
-
 
 require __DIR__.'/auth.php';
